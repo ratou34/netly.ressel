@@ -916,7 +916,7 @@ async function handleAuth(){
     const{error}=await sb.auth.signInWithPassword({email,password});
     if(error){showAuthError(translateError(error.message));btn.disabled=false;btn.textContent='Se connecter';}
   }else{
-    const{error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:'https://reliable-khapse-6c111a.netlify.app/confirm.html'}});
+    const{error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:'https://ratou34.github.io/netly/confirm.html'}});
     if(error){showAuthError(translateError(error.message));btn.disabled=false;btn.textContent='Créer mon compte';}
     else{const s=document.getElementById('auth-success');s.textContent='Compte créé ! Vérifie ta boîte mail.';s.style.display='block';btn.disabled=false;btn.textContent='Créer mon compte';}
   }
