@@ -382,6 +382,66 @@ input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px var(--purple-glow)}
   body::before,.progress-fill,.section.show{animation:none}
   .card,.btn-primary,.btn-plan.upgrade,.plan-card{transition:none}
 }
+
+/* ============================================================
+   ✦✦ REFONTE PREMIUM v2 — 100% visuel & additif
+   ============================================================ */
+
+/* Aurora vivante en fond (mouvement organique, GPU, léger) */
+body::before{
+  inset:-25%;
+  background:
+    radial-gradient(45% 45% at 30% 30%, var(--purple-glow), transparent 60%),
+    radial-gradient(40% 40% at 75% 35%, var(--purple-dim), transparent 60%),
+    radial-gradient(50% 50% at 55% 82%, var(--purple-glow), transparent 60%);
+  filter:saturate(120%);
+  animation:aurora 26s ease-in-out infinite alternate;
+}
+@keyframes aurora{
+  0%{transform:translate(-3%,-2%) rotate(0deg) scale(1)}
+  50%{transform:translate(4%,3%) rotate(8deg) scale(1.1)}
+  100%{transform:translate(-2%,5%) rotate(-6deg) scale(1.05)}
+}
+
+/* Cartes premium : reflet en haut + double profondeur */
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,0) 32%), var(--card);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08), inset 0 0 0 1px rgba(255,255,255,.02), 0 24px 50px -34px #000;
+}
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1), 0 34px 70px -34px #000, 0 0 0 1px var(--border2), 0 0 40px -12px var(--purple-glow);
+}
+.card-title{letter-spacing:-.4px;font-weight:700}
+
+/* Boutons : ressort au survol */
+.btn-primary,.btn-plan.upgrade,.lock-btn{transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s,filter .2s}
+.btn-primary:hover,.btn-plan.upgrade:hover,.lock-btn:hover{transform:translateY(-2px) scale(1.01)}
+.btn-primary:active,.btn-plan.upgrade:active,.lock-btn:active{transform:translateY(0) scale(.99)}
+
+/* Pop du gros chiffre quand un flip est enregistré */
+@keyframes ntlPop{0%{transform:scale(1)}40%{transform:scale(1.14)}100%{transform:scale(1)}}
+.profit-num.ntl-pop{animation:ntlPop .5s cubic-bezier(.34,1.56,.64,1)}
+
+/* ——— Palette de commandes (⌘K) ——— */
+#ntl-pal{position:fixed;inset:0;z-index:100000;display:none;align-items:flex-start;justify-content:center;background:rgba(5,5,12,.55);backdrop-filter:blur(6px);padding-top:14vh}
+#ntl-pal.show{display:flex;animation:ntlFade .18s ease}
+@keyframes ntlFade{from{opacity:0}to{opacity:1}}
+.ntl-pal-box{width:min(540px,92vw);background:linear-gradient(180deg,rgba(20,18,40,.97),rgba(13,13,26,.97));border:1px solid var(--border2);border-radius:18px;overflow:hidden;box-shadow:0 40px 90px -30px #000,0 0 0 1px rgba(255,255,255,.04),0 0 60px -22px var(--purple-glow);animation:ntlRise .22s cubic-bezier(.2,.8,.2,1)}
+@keyframes ntlRise{from{transform:translateY(-10px);opacity:.6}to{transform:none;opacity:1}}
+#ntl-pal-input{width:100%;background:transparent;border:none;outline:none;color:var(--text);font:600 17px/1 'Bricolage Grotesque','Inter',sans-serif;padding:20px 22px;border-bottom:1px solid var(--border)}
+#ntl-pal-input::placeholder{color:var(--text2)}
+#ntl-pal-list{max-height:46vh;overflow:auto;padding:8px}
+.ntl-pal-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:11px;cursor:pointer;color:var(--text);font-size:14px;font-weight:600}
+.ntl-pal-item:hover,.ntl-pal-item.on{background:var(--purple-dim);color:#fff}
+.ntl-pal-item kbd{font:600 11px/1 'Inter',sans-serif;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:6px;padding:4px 7px;color:var(--text2)}
+.ntl-pal-hint{padding:10px 16px;font-size:11px;color:var(--text2);border-top:1px solid var(--border);background:rgba(0,0,0,.2)}
+
+/* ——— Bouton flottant d'ouverture ——— */
+#ntl-launch{position:fixed;right:18px;bottom:18px;z-index:9998;display:flex;align-items:center;gap:8px;padding:11px 15px;border-radius:14px;cursor:pointer;border:1px solid var(--border2);color:var(--text);background:linear-gradient(140deg,var(--purple-dim),rgba(13,13,26,.92));backdrop-filter:blur(10px);box-shadow:0 14px 34px -16px var(--purple),0 0 0 1px rgba(255,255,255,.03);font:700 12px/1 'Inter',sans-serif;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+#ntl-launch:hover{transform:translateY(-2px);box-shadow:0 20px 42px -16px var(--purple)}
+#ntl-launch kbd{background:rgba(255,255,255,.08);border:1px solid var(--border2);border-radius:6px;padding:3px 6px;font-size:11px}
+@media(max-width:560px){#ntl-launch .lbl{display:none}}
 </style>
 </head>
 <body>
@@ -1321,6 +1381,104 @@ function openCheckout(url, plan){
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 
 waitForSupabase(init);
+</script>
+<script>
+/* ✦ Surprises Netly — auto-suffisant, n'altère aucune logique existante */
+(function(){
+  function ready(fn){ if(document.readyState!=='loading') fn(); else document.addEventListener('DOMContentLoaded',fn); }
+  ready(function(){
+    var isMac=/Mac|iPhone|iPad/.test(navigator.platform||'');
+    var SC=isMac?'⌘K':'Ctrl K';
+    var TABS=[
+      {id:'calc',label:'Calculer',key:'1'},
+      {id:'dash',label:'Dashboard',key:'2'},
+      {id:'cours',label:'En cours',key:'3'},
+      {id:'stats',label:'Statistiques',key:'4'},
+      {id:'calendrier',label:'Calendrier',key:'5'},
+      {id:'stock',label:'Stock',key:'6'},
+      {id:'resume',label:'Bilan mensuel',key:'7'},
+      {id:'plans',label:'Plans / Abonnement',key:'8'},
+      {id:'parametres',label:'Paramètres',key:'9'}
+    ];
+    function navBtnFor(id){
+      var btns=document.querySelectorAll('.nav-btn');
+      for(var i=0;i<btns.length;i++){ var o=btns[i].getAttribute('onclick')||''; if(o.indexOf("showTab('"+id+"'")>-1) return btns[i]; }
+      return null;
+    }
+    function go(id){ var b=navBtnFor(id); if(b) b.click(); }
+
+    /* ---- Palette de commandes ---- */
+    var pal=document.createElement('div'); pal.id='ntl-pal';
+    pal.innerHTML='<div class="ntl-pal-box"><input id="ntl-pal-input" placeholder="Aller à… (tape pour filtrer)" autocomplete="off" spellcheck="false"><div id="ntl-pal-list"></div><div class="ntl-pal-hint">↑ ↓ naviguer&nbsp;·&nbsp;⏎ ouvrir&nbsp;·&nbsp;échap fermer</div></div>';
+    document.body.appendChild(pal);
+    var input=pal.querySelector('#ntl-pal-input'), list=pal.querySelector('#ntl-pal-list'), sel=0, filtered=TABS;
+    function renderList(){
+      list.innerHTML=filtered.map(function(t,i){return '<div class="ntl-pal-item'+(i===sel?' on':'')+'" data-id="'+t.id+'"><span>'+t.label+'</span><kbd>'+t.key+'</kbd></div>';}).join('');
+      Array.prototype.forEach.call(list.children,function(el){ el.onclick=function(){ go(el.getAttribute('data-id')); closePal(); }; });
+    }
+    function openPal(){ pal.classList.add('show'); input.value=''; filtered=TABS; sel=0; renderList(); setTimeout(function(){input.focus();},30); }
+    function closePal(){ pal.classList.remove('show'); }
+    function togglePal(){ pal.classList.contains('show')?closePal():openPal(); }
+    input.addEventListener('input',function(){ var q=input.value.toLowerCase(); filtered=TABS.filter(function(t){return t.label.toLowerCase().indexOf(q)>-1;}); sel=0; renderList(); });
+    input.addEventListener('keydown',function(e){
+      if(e.key==='ArrowDown'){e.preventDefault();sel=Math.min(sel+1,filtered.length-1);renderList();}
+      else if(e.key==='ArrowUp'){e.preventDefault();sel=Math.max(sel-1,0);renderList();}
+      else if(e.key==='Enter'){e.preventDefault(); if(filtered[sel]){go(filtered[sel].id);closePal();}}
+      else if(e.key==='Escape'){closePal();}
+    });
+    pal.addEventListener('click',function(e){ if(e.target===pal) closePal(); });
+
+    /* ---- Bouton flottant ---- */
+    var launch=document.createElement('div'); launch.id='ntl-launch';
+    launch.innerHTML='<span>🔎</span><span class="lbl">Naviguer</span><kbd>'+SC+'</kbd>';
+    launch.onclick=openPal;
+    document.body.appendChild(launch);
+
+    /* ---- Raccourcis clavier ---- */
+    document.addEventListener('keydown',function(e){
+      if((e.metaKey||e.ctrlKey)&&(e.key==='k'||e.key==='K')){ e.preventDefault(); togglePal(); return; }
+      var tag=(e.target.tagName||'').toLowerCase();
+      if(tag==='input'||tag==='select'||tag==='textarea'||e.target.isContentEditable) return;
+      var t=TABS.filter(function(x){return x.key===e.key;})[0];
+      if(t) go(t.id);
+    });
+
+    /* ---- Confetti maison (léger, sans librairie) ---- */
+    function burstConfetti(){
+      var c=document.createElement('canvas'), ctx=c.getContext('2d');
+      var dpr=Math.min(window.devicePixelRatio||1,2);
+      c.width=innerWidth*dpr; c.height=innerHeight*dpr;
+      c.style.cssText='position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:99999';
+      document.body.appendChild(c);
+      var cs=getComputedStyle(document.documentElement);
+      var cols=[(cs.getPropertyValue('--purple')||'#7c3aed').trim(),(cs.getPropertyValue('--purple2')||'#a855f7').trim(),'#22c55e','#ffffff'];
+      var N=110, P=[], ox=innerWidth/2*dpr, oy=innerHeight*0.4*dpr;
+      for(var i=0;i<N;i++){ var a=Math.random()*Math.PI*2, sp=(4+Math.random()*8)*dpr; P.push({x:ox,y:oy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-7*dpr,g:0.28*dpr,life:1,rot:Math.random()*6,vr:(Math.random()-.5)*.45,col:cols[i%cols.length],s:(5+Math.random()*7)*dpr}); }
+      var t0=performance.now();
+      (function frame(t){
+        var dt=Math.min((t-t0)/16.67,2); t0=t; ctx.clearRect(0,0,c.width,c.height); var alive=false;
+        for(var i=0;i<P.length;i++){ var p=P[i]; p.vy+=p.g*dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.rot+=p.vr*dt; p.life-=0.011*dt;
+          if(p.life>0&&p.y<c.height+60){ alive=true; ctx.save(); ctx.globalAlpha=Math.max(p.life,0); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.col; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.62); ctx.restore(); } }
+        if(alive) requestAnimationFrame(frame); else c.remove();
+      })(t0);
+    }
+
+    /* ---- Délice à l'enregistrement d'un flip profitable ---- */
+    if(typeof window.saveFlip==='function'){
+      var _save=window.saveFlip;
+      window.saveFlip=function(){
+        var el=document.getElementById('profit-num'); var txt=el?el.textContent:''; 
+        var num=parseFloat((txt||'').replace(/[^0-9,\.\-]/g,'').replace(',','.'));
+        var r=_save.apply(this,arguments);
+        try{
+          if(el){ el.classList.remove('ntl-pop'); void el.offsetWidth; el.classList.add('ntl-pop'); }
+          if(!isNaN(num)&&num>0){ burstConfetti(); }
+        }catch(_){}
+        return r;
+      };
+    }
+  });
+})();
 </script>
 </body>
 </html>
