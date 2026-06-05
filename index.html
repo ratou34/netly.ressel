@@ -6,6 +6,9 @@
 <title>Netly — Profit Tracker Resell</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Inter:wght@400..900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -234,6 +237,147 @@ select option{background:#0d0d1a}
 
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--purple);color:#fff;font-size:13px;font-weight:700;padding:11px 24px;border-radius:24px;opacity:0;transition:all .28s cubic-bezier(.34,1.56,.64,1);z-index:9999;white-space:nowrap;font-family:inherit}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ============================================================
+   ✦ COUP DE NEUF VISUEL — couche graphique uniquement.
+   Aucune logique modifiée. S'appuie sur tes variables (--purple…)
+   donc la perso de couleur continue de tout repeindre.
+   ============================================================ */
+
+/* — Police d'affichage caractérielle sur les titres & gros chiffres — */
+.logo-name,.auth-logo-name,.card-title,.profit-num,.plan-price,.plan-name,
+.auth-title,.params-section-title,.profile-name,.stats-mini-val{
+  font-family:'Bricolage Grotesque','Inter',sans-serif;
+}
+
+/* — Atmosphère de fond : halos colorés + glow flottant + grain — */
+body{
+  background:
+    radial-gradient(1100px 700px at 12% -8%, var(--purple-glow), transparent 60%),
+    radial-gradient(900px 600px at 112% 10%, var(--purple-dim), transparent 55%),
+    radial-gradient(760px 760px at 50% 122%, var(--purple-glow), transparent 60%),
+    var(--bg);
+  background-attachment:fixed;
+}
+body::before{
+  content:"";position:fixed;inset:-10%;z-index:0;pointer-events:none;
+  background:radial-gradient(360px 360px at 25% 30%, var(--purple-glow), transparent 70%);
+  animation:floatGlow 20s ease-in-out infinite alternate;
+}
+@keyframes floatGlow{0%{transform:translate(0,0)}50%{transform:translate(7vw,5vh)}100%{transform:translate(-5vw,9vh)}}
+body::after{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.topbar,.nav-wrap,.container,#auth-screen{position:relative;z-index:1}
+
+/* — Topbar : verre dépoli + liseré lumineux — */
+.topbar{
+  background:linear-gradient(180deg, rgba(11,11,22,.85), rgba(7,7,15,.65));
+  backdrop-filter:blur(16px) saturate(140%);
+  box-shadow:0 1px 0 var(--border2), 0 14px 34px -26px #000;
+}
+
+/* — Logo en dégradé lumineux — */
+.logo-name,.auth-logo-name{
+  background:linear-gradient(100deg,var(--text),var(--purple2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.logo-icon,.auth-logo-icon{
+  background:linear-gradient(140deg,var(--purple),var(--purple2));border:none;
+  box-shadow:0 8px 20px -8px var(--purple), inset 0 1px 0 rgba(255,255,255,.28);
+}
+
+/* — Cartes : verre, profondeur, soulèvement au survol — */
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,0)), var(--card);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 22px 44px -30px #000;
+  transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s, border-color .25s;
+}
+.card:hover{
+  transform:translateY(-2px);border-color:var(--border2);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07), 0 30px 64px -32px #000, 0 0 0 1px var(--purple-glow);
+}
+
+/* — Le GROS chiffre de profit : halo (la couleur reste pilotée par ton JS) — */
+.profit-big{position:relative}
+.profit-big::after{
+  content:"";position:absolute;left:50%;top:50%;width:260px;height:130px;transform:translate(-50%,-50%);
+  background:radial-gradient(closest-side, var(--purple-glow), transparent);
+  filter:blur(12px);z-index:0;pointer-events:none;
+}
+.profit-num{position:relative;z-index:1;text-shadow:0 0 34px currentColor;letter-spacing:-3px}
+
+/* — Boutons : dégradé, glow et reflet qui balaie au survol — */
+.btn-primary,.btn-plan.upgrade,.lock-btn{
+  background:linear-gradient(100deg,var(--purple),var(--purple2));color:#fff;border:none;
+  box-shadow:0 12px 26px -12px var(--purple), inset 0 1px 0 rgba(255,255,255,.3);
+  position:relative;overflow:hidden;
+  transition:transform .18s, box-shadow .18s, filter .18s, opacity .18s;
+}
+.btn-primary:hover,.btn-plan.upgrade:hover,.lock-btn:hover{
+  transform:translateY(-1px);filter:brightness(1.07);opacity:1;
+  box-shadow:0 18px 36px -12px var(--purple), inset 0 1px 0 rgba(255,255,255,.35);
+}
+.btn-primary::after,.btn-plan.upgrade::after,.lock-btn::after{
+  content:"";position:absolute;top:0;left:-130%;width:55%;height:100%;transform:skewX(-20deg);
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.4),transparent);transition:left .6s;
+}
+.btn-primary:hover::after,.btn-plan.upgrade:hover::after,.lock-btn:hover::after{left:140%}
+
+/* — Nav : onglet actif avec soulignement lumineux — */
+.nav-btn.active{border-bottom-color:transparent;position:relative}
+.nav-btn.active::after{
+  content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,var(--purple),var(--purple2));box-shadow:0 0 12px var(--purple);
+}
+
+/* — Plans : carte populaire qui brille + prix en dégradé — */
+.plan-card{transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s, border-color .25s}
+.plan-card:hover{transform:translateY(-4px);box-shadow:0 32px 64px -32px #000}
+.plan-card.popular{box-shadow:0 0 0 1px var(--purple2), 0 26px 64px -26px var(--purple)}
+.plan-card.popular::before{
+  content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;z-index:0;pointer-events:none;
+  background:linear-gradient(140deg,var(--purple),var(--purple2),transparent);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;opacity:.85;
+}
+.plan-price{
+  background:linear-gradient(100deg,var(--text),var(--purple2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+
+/* — Avatar profil : anneau dégradé + glow — */
+.profile-avatar{
+  background:linear-gradient(140deg,var(--purple-dim),var(--card));color:var(--purple3);
+  box-shadow:0 0 0 2px var(--purple2), 0 12px 30px -10px var(--purple);
+}
+
+/* — Barre de progression animée — */
+.progress-fill{
+  background:linear-gradient(90deg,var(--purple),var(--purple2),var(--purple));
+  background-size:200% 100%;animation:slideGrad 2.6s linear infinite;
+}
+@keyframes slideGrad{to{background-position:-200% 0}}
+
+/* — Petits badges : léger halo — */
+.frais-badge,.plat-tag{box-shadow:0 2px 10px -5px var(--purple)}
+
+/* — Champs : focus lumineux — */
+input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px var(--purple-glow)}
+
+/* — Pastilles de couleur (perso) : pop au survol — */
+.color-opt{transition:transform .15s, box-shadow .15s}
+.color-opt:hover{transform:scale(1.12)}
+
+/* — Apparition fluide des écrans — */
+.section.show{animation:sectionIn .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes sectionIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+@media(prefers-reduced-motion:reduce){
+  body::before,.progress-fill,.section.show{animation:none}
+  .card,.btn-primary,.btn-plan.upgrade,.plan-card{transition:none}
+}
 </style>
 </head>
 <body>
@@ -522,7 +666,7 @@ select option{background:#0d0d1a}
           <div class="plan-feature"><span class="check">✓</span><span class="feat-on">Conseil du jour</span></div>
           <div class="plan-feature"><span class="cross">✗</span><span>Mode en cours</span></div>
           <div class="plan-feature"><span class="cross">✗</span><span>Export PDF</span></div>
-          <button class="btn-plan upgrade" onclick="openCheckout('https://netlyressel.lemonsqueezy.com/checkout/buy/dc1e27f1-11ca-4602-8cf8-be54de27de3a?discount=0')">Passer à Starter</button>
+          <button class="btn-plan upgrade" onclick="openCheckout('https://getnetly.lemonsqueezy.com/checkout/buy/37d3dc7b-6822-47b3-a07c-7947f25c1871','starter')">Passer à Starter</button>
         </div>
         <div class="plan-card popular">
           <div class="popular-badge">⚡ POPULAIRE</div>
@@ -536,7 +680,7 @@ select option{background:#0d0d1a}
           <div class="plan-feature"><span class="check">✓</span><span class="feat-on">Vue calendrier</span></div>
           <div class="plan-feature"><span class="check">✓</span><span class="feat-on">Export PDF</span></div>
           <div class="plan-feature"><span class="cross">✗</span><span>Simulateur prix</span></div>
-          <button class="btn-plan upgrade" onclick="openCheckout('https://netlyressel.lemonsqueezy.com/checkout/buy/045f4110-7ed1-4e3c-b7be-e6a724b556e5')">Passer à Pro</button>
+          <button class="btn-plan upgrade" onclick="openCheckout('https://getnetly.lemonsqueezy.com/checkout/buy/3e909680-6e02-42ee-a8cb-7f89b52d25a1','pro')">Passer à Pro</button>
         </div>
         <div class="plan-card">
           <div class="plan-name">Elite</div>
@@ -548,10 +692,10 @@ select option{background:#0d0d1a}
           <div class="plan-feature"><span class="check">✓</span><span class="feat-on">Gestion de stock</span></div>
           <div class="plan-feature"><span class="check">✓</span><span class="feat-on">Export Excel complet</span></div>
           <div class="plan-feature"><span class="check">✓</span><span class="feat-on">Support prioritaire</span></div>
-          <button class="btn-plan upgrade" onclick="openCheckout('https://netlyressel.lemonsqueezy.com/checkout/buy/230637d9-1b87-4cb7-944f-b9618d394111')">Passer à Elite</button>
+          <button class="btn-plan upgrade" onclick="openCheckout('https://getnetly.lemonsqueezy.com/checkout/buy/6372100b-1750-4835-b7e2-fc349679d627','elite')">Passer à Elite</button>
         </div>
       </div>
-      <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:4px;font-weight:500">Paiement sécurisé par Stripe · Annulation à tout moment</div>
+      <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:4px;font-weight:500">Paiement sécurisé par Lemon Squeezy · Annulation à tout moment</div>
     </div>
 
     <!-- PARAMÈTRES -->
@@ -916,7 +1060,7 @@ async function handleAuth(){
     const{error}=await sb.auth.signInWithPassword({email,password});
     if(error){showAuthError(translateError(error.message));btn.disabled=false;btn.textContent='Se connecter';}
   }else{
-    const{error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:'https://ratou34.github.io/netly/confirm.html'}});
+    const{error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:'https://reliable-khapse-6c111a.netlify.app/confirm.html'}});
     if(error){showAuthError(translateError(error.message));btn.disabled=false;btn.textContent='Créer mon compte';}
     else{const s=document.getElementById('auth-success');s.textContent='Compte créé ! Vérifie ta boîte mail.';s.style.display='block';btn.disabled=false;btn.textContent='Créer mon compte';}
   }
@@ -1159,9 +1303,14 @@ function calcSimulateur(){
   document.getElementById('sim-result').style.display='block';
 }
 
-function openCheckout(url){
+function openCheckout(url, plan){
   const email=currentUser?.email||'';
-  const finalUrl=email?url+(url.includes('?')?'&':'?')+'checkout[email]='+encodeURIComponent(email):url;
+  const uid=currentUser?.id||'';
+  let finalUrl=url;
+  const add=(k,v)=>{finalUrl+=(finalUrl.includes('?')?'&':'?')+k+'='+encodeURIComponent(v);};
+  if(email) add('checkout[email]',email);
+  if(uid) add('checkout[custom][user_id]',uid);   // <- pour que le webhook sache QUI a payé
+  if(plan) add('checkout[custom][plan]',plan);     // <- et QUEL plan
   window.open(finalUrl,'_blank');
 }
 
