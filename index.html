@@ -445,6 +445,135 @@ body::before{
 #ntl-launch:hover{transform:translateY(-2px);box-shadow:0 20px 42px -16px var(--purple)}
 #ntl-launch kbd{background:rgba(255,255,255,.08);border:1px solid var(--border2);border-radius:6px;padding:3px 6px;font-size:11px}
 @media(max-width:560px){#ntl-launch .lbl{display:none}}
+
+/* ============================================================
+   NETLY OBSIDIAN v3 — skin génératif premium
+   (additif : ne modifie aucune logique applicative)
+   ============================================================ */
+@property --nl3a{syntax:'<angle>';inherits:false;initial-value:0deg}
+
+/* --- fondations : le canvas vit derrière tout --- */
+html{background:var(--bg)}
+body{background:transparent!important}
+body::before,body::after{display:none!important} /* l'aurora CSS v2 est remplacée par le canvas */
+::selection{background:var(--purple);color:#fff}
+*::-webkit-scrollbar{width:9px;height:9px}
+*::-webkit-scrollbar-track{background:transparent}
+*::-webkit-scrollbar-thumb{background:linear-gradient(var(--purple),var(--purple2));border-radius:8px;border:2px solid var(--bg)}
+:focus-visible{outline:2px solid var(--purple2);outline-offset:2px;border-radius:6px}
+
+/* --- couches décoratives injectées par JS --- */
+#nl3-aurora{position:fixed;inset:0;z-index:-3;width:100%;height:100%;pointer-events:none}
+#nl3-grid{position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(168,85,247,.32) 1px,transparent 1.6px);
+  background-size:26px 26px;opacity:.5;
+  -webkit-mask-image:radial-gradient(360px 360px at var(--nl3mx,-500px) var(--nl3my,-500px),#000 0%,transparent 72%);
+  mask-image:radial-gradient(360px 360px at var(--nl3mx,-500px) var(--nl3my,-500px),#000 0%,transparent 72%);
+  transition:opacity .8s}
+#nl3-spot{position:fixed;inset:0;z-index:-1;pointer-events:none;mix-blend-mode:screen;opacity:.5;transition:opacity .8s;
+  background:radial-gradient(540px 540px at var(--nl3mx,-500px) var(--nl3my,-500px),rgba(124,58,237,.16),rgba(124,58,237,.05) 45%,transparent 70%)}
+.nl3-idle #nl3-grid,.nl3-idle #nl3-spot{opacity:0}
+#nl3-grain{position:fixed;inset:-60px;z-index:2147483000;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  animation:nl3-grain .6s steps(6) infinite}
+@keyframes nl3-grain{
+  0%{transform:translate(0,0)}20%{transform:translate(-18px,12px)}40%{transform:translate(12px,-20px)}
+  60%{transform:translate(-12px,-8px)}80%{transform:translate(18px,14px)}100%{transform:translate(0,0)}}
+@media (pointer:coarse){#nl3-grid,#nl3-spot{display:none}#nl3-grain{animation:none;opacity:.035}}
+
+/* --- topbar : verre + filet lumineux --- */
+.topbar{background:rgba(7,7,15,.55)!important;backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);
+  border-bottom-color:transparent;transition:box-shadow .3s,background .3s}
+.topbar::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--purple) 30%,var(--purple2) 50%,var(--purple) 70%,transparent);
+  background-size:220% 100%;animation:nl3-line 7s linear infinite;opacity:.8}
+@keyframes nl3-line{from{background-position:200% 0}to{background-position:-200% 0}}
+.topbar.nl3-sc{box-shadow:0 18px 40px -22px rgba(0,0,0,.9);background:rgba(7,7,15,.78)!important}
+.logo-icon{position:relative}
+.logo-icon::after{content:'';position:absolute;inset:-6px;border-radius:14px;z-index:-1;
+  background:radial-gradient(circle,var(--purple-glow),transparent 70%);
+  animation:nl3-breathe 5s ease-in-out infinite alternate}
+@keyframes nl3-breathe{from{opacity:.4;transform:scale(.92)}to{opacity:1;transform:scale(1.12)}}
+
+/* --- nav : indicateur magnétique fluide --- */
+.nav{position:relative}
+.nav-btn{transition:color .2s,transform .2s}
+.nav-btn:hover{transform:translateY(-1px)}
+.nav-btn.active{border-bottom-color:transparent!important}
+.nav-btn.active::after{display:none!important}
+#nl3-nav-ind{position:absolute;bottom:0;height:2px;border-radius:2px;pointer-events:none;
+  background:linear-gradient(90deg,var(--purple),var(--purple2));
+  box-shadow:0 0 14px var(--purple),0 -3px 22px -6px var(--purple2);
+  transition:left .42s cubic-bezier(.22,1,.36,1),width .42s cubic-bezier(.22,1,.36,1),opacity .3s;opacity:0}
+#nl3-nav-ind.nl3-on{opacity:1}
+
+/* --- cartes : verre taillé (bordure dégradée sans pseudo-élément) --- */
+.card,.metric,.auth-box,.lock-box,.result-box,.plan-card{
+  border:1px solid transparent!important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,0) 36%),
+    linear-gradient(var(--card),var(--card)) padding-box,
+    linear-gradient(165deg,rgba(168,85,247,.55),rgba(124,58,237,.10) 28%,rgba(255,255,255,.06) 55%,rgba(168,85,247,.30) 100%) border-box!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 26px 56px -28px rgba(0,0,0,.85)}
+.card,.metric,.plan-card{transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s}
+.card:hover{transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 32px 70px -30px rgba(0,0,0,.95),0 0 0 1px rgba(124,58,237,.18)}
+.metric{will-change:transform}
+.metric:hover{transform:translateY(-3px) scale(1.015)}
+.metric-val,.plan-price,.profit-num{font-family:'Bricolage Grotesque','Inter',sans-serif}
+
+/* --- beam : une comète parcourt le contour des éléments clés --- */
+.result-box,.plan-card.popular,.auth-box{position:relative}
+.result-box::after,.plan-card.popular::after,.auth-box::after{content:'';position:absolute;inset:-1px;border-radius:inherit;
+  padding:1px;pointer-events:none;
+  background:conic-gradient(from var(--nl3a),transparent 0 78%,var(--purple2) 88%,#fff 92%,var(--purple) 96%,transparent 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:nl3-spin 5.5s linear infinite;opacity:.85}
+.auth-box::after{animation-duration:9s;opacity:.6}
+@keyframes nl3-spin{to{--nl3a:360deg}}
+
+/* --- boutons : profondeur, magnétisme (JS) et ripple --- */
+.btn-primary,.lock-btn,.btn-plan.upgrade{
+  background:linear-gradient(135deg,var(--purple),var(--purple2))!important;
+  box-shadow:0 12px 30px -12px var(--purple),inset 0 1px 0 rgba(255,255,255,.28);
+  transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .25s,opacity .15s;position:relative;overflow:hidden}
+.btn-primary:hover,.lock-btn:hover,.btn-plan.upgrade:hover{opacity:1!important;box-shadow:0 16px 40px -12px var(--purple2),inset 0 1px 0 rgba(255,255,255,.3)}
+.btn-primary:active,.lock-btn:active{transform:scale(.97)}
+.btn-outline{transition:all .2s}
+.btn-outline:hover{box-shadow:0 0 0 1px var(--purple) inset,0 10px 26px -16px var(--purple)}
+.nl3-ripple{position:absolute;border-radius:50%;pointer-events:none;background:rgba(255,255,255,.35);
+  transform:scale(0);animation:nl3-rip .55s ease-out forwards;mix-blend-mode:screen}
+@keyframes nl3-rip{to{transform:scale(2.6);opacity:0}}
+
+/* --- inputs : focus lumineux --- */
+input[type=text],input[type=email],input[type=password],input[type=number],select{transition:border-color .2s,box-shadow .25s,background .2s}
+input:focus,select:focus{border-color:var(--purple2)!important;box-shadow:0 0 0 3px rgba(124,58,237,.22),0 0 24px -8px var(--purple);background:var(--bg2)}
+
+/* --- profit : pulse à chaque calcul --- */
+.profit-num{text-shadow:0 0 28px rgba(124,58,237,.35)}
+.profit-num.nl3-pulse{animation:nl3-pop .5s cubic-bezier(.22,1.4,.36,1)}
+@keyframes nl3-pop{0%{transform:scale(.94);filter:brightness(1.6)}60%{transform:scale(1.04)}100%{transform:scale(1);filter:none}}
+
+/* --- transitions d'onglets --- */
+.section.show{animation:nl3-in .38s cubic-bezier(.22,1,.36,1)}
+@keyframes nl3-in{from{opacity:0;transform:translateY(10px) scale(.997)}to{opacity:1;transform:none}}
+
+/* --- divers --- */
+.lock-cover{backdrop-filter:blur(10px) saturate(1.2);-webkit-backdrop-filter:blur(10px) saturate(1.2)}
+.plan-chip{box-shadow:0 0 18px -6px currentColor}
+.frais-badge{box-shadow:0 0 16px -8px var(--purple2)}
+
+/* --- accessibilité : réduction des animations --- */
+@media (prefers-reduced-motion:reduce){
+  .topbar::after,.logo-icon::after,#nl3-grain,.result-box::after,.plan-card.popular::after,.auth-box::after{animation:none!important}
+  #nl3-grain{opacity:.03}
+  .section.show,.profit-num.nl3-pulse{animation:none!important}
+  .card,.metric,.plan-card,.nav-btn,#nl3-nav-ind{transition:none!important}
+}
+@media (max-width:640px){
+  .card:hover,.metric:hover{transform:none}
+  #nl3-spot,#nl3-grid{display:none}
+}
+
 </style>
 </head>
 <body>
@@ -1487,6 +1616,193 @@ waitForSupabase(init);
     }
   });
 })();
+</script>
+<script>
+
+/* NETLY OBSIDIAN v3 — moteur graphique (additif, isolé, sans dépendance) */
+(function(){
+'use strict';
+try{
+var RM=false,FINE=true;
+try{RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    FINE=window.matchMedia('(pointer:fine)').matches;}catch(e){}
+
+function ready(fn){if(document.readyState!=='loading')fn();else document.addEventListener('DOMContentLoaded',fn);}
+
+ready(function(){try{
+
+/* ---------- 1) Couches décoratives ---------- */
+var aur=document.createElement('canvas');aur.id='nl3-aurora';aur.setAttribute('aria-hidden','true');
+var grid=document.createElement('div');grid.id='nl3-grid';grid.setAttribute('aria-hidden','true');
+var spot=document.createElement('div');spot.id='nl3-spot';spot.setAttribute('aria-hidden','true');
+var grain=document.createElement('div');grain.id='nl3-grain';grain.setAttribute('aria-hidden','true');
+document.body.insertBefore(spot,document.body.firstChild);
+document.body.insertBefore(grid,document.body.firstChild);
+document.body.insertBefore(aur,document.body.firstChild);
+document.body.appendChild(grain);
+
+/* ---------- 2) Grain cinéma (tuile générée) ---------- */
+try{
+  var gc=document.createElement('canvas');gc.width=160;gc.height=160;
+  var gx=gc.getContext('2d'),gd=gx.createImageData(160,160);
+  for(var i=0;i<gd.data.length;i+=4){var v=(Math.random()*255)|0;gd.data[i]=v;gd.data[i+1]=v;gd.data[i+2]=v;gd.data[i+3]=(Math.random()*28)|0;}
+  gx.putImageData(gd,0,0);
+  grain.style.backgroundImage='url('+gc.toDataURL()+')';
+}catch(e){}
+
+/* ---------- 3) Aurora générative (canvas) ---------- */
+var actx=aur.getContext('2d'),off=document.createElement('canvas'),octx=off.getContext('2d');
+var W=0,H=0,SC=0.13,t=Math.random()*1000,last=0,running=true;
+var pal={bg:'#07070f',c:['#7c3aed','#a855f7','#c084fc','#1e0f45']};
+function readPal(){
+  try{
+    var cs=getComputedStyle(document.documentElement);
+    var p1=cs.getPropertyValue('--purple').trim()||pal.c[0];
+    var p2=cs.getPropertyValue('--purple2').trim()||pal.c[1];
+    var p3=cs.getPropertyValue('--purple3').trim()||pal.c[2];
+    var pg=cs.getPropertyValue('--purple-glow').trim()||pal.c[3];
+    var bg=cs.getPropertyValue('--bg').trim()||pal.bg;
+    pal={bg:bg,c:[p1,p2,p3,pg]};
+  }catch(e){}
+}
+readPal();setInterval(readPal,3500);
+var blobs=[];
+for(var b=0;b<6;b++){
+  blobs.push({fx:.13+.11*Math.random(),fy:.11+.13*Math.random(),px:Math.random()*6.28,py:Math.random()*6.28,
+              r:.30+.30*Math.random(),ci:b%4,a:b===0?.95:.45+.35*Math.random()});
+}
+function resize(){
+  var dpr=Math.min(window.devicePixelRatio||1,1.5);
+  W=aur.width=Math.round(innerWidth*dpr);H=aur.height=Math.round(innerHeight*dpr);
+  aur.style.width=innerWidth+'px';aur.style.height=innerHeight+'px';
+  off.width=Math.max(150,Math.round(W*SC));off.height=Math.max(110,Math.round(H*SC));
+}
+resize();var rT;addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(resize,160);});
+function frame(now){
+  if(!running)return;
+  requestAnimationFrame(frame);
+  if(now-last<36)return; // ~28 fps
+  var dt=Math.min(40,now-last||16);last=now;t+=dt*0.00022;
+  var w=off.width,h=off.height,m=Math.min(w,h);
+  octx.globalCompositeOperation='source-over';
+  octx.fillStyle=pal.bg;octx.fillRect(0,0,w,h);
+  octx.globalCompositeOperation='lighter';
+  for(var i=0;i<blobs.length;i++){
+    var B=blobs[i];
+    var x=w*(0.5+0.42*Math.sin(t*60*B.fx+B.px));
+    var y=h*(0.5+0.42*Math.cos(t*60*B.fy+B.py));
+    var r=m*B.r*(0.85+0.15*Math.sin(t*40+B.px));
+    var g=octx.createRadialGradient(x,y,0,x,y,r);
+    var col=pal.c[B.ci];
+    g.addColorStop(0,col);g.addColorStop(1,'rgba(0,0,0,0)');
+    octx.globalAlpha=B.a*0.5;
+    octx.fillStyle=g;octx.beginPath();octx.arc(x,y,r,0,6.2832);octx.fill();
+  }
+  octx.globalAlpha=1;
+  actx.imageSmoothingEnabled=true;
+  try{actx.imageSmoothingQuality='high';}catch(e){}
+  actx.clearRect(0,0,W,H);
+  actx.drawImage(off,0,0,W,H); // upscale massif = flou organique
+  /* vignette pour la profondeur */
+  var v=actx.createRadialGradient(W/2,H*0.42,Math.min(W,H)*0.25,W/2,H/2,Math.max(W,H)*0.75);
+  v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,0.5)');
+  actx.fillStyle=v;actx.fillRect(0,0,W,H);
+}
+if(RM){frame(40);running=false;} else {requestAnimationFrame(frame);}
+document.addEventListener('visibilitychange',function(){
+  if(RM)return;
+  if(document.hidden){running=false;}
+  else if(!running){running=true;last=0;requestAnimationFrame(frame);}
+});
+
+/* ---------- 4) Curseur : grille révélée + halo ---------- */
+if(FINE&&!RM){
+  var idleT=null,moved=false;
+  addEventListener('pointermove',function(e){
+    if(!moved){moved=true;}
+    document.documentElement.style.setProperty('--nl3mx',e.clientX+'px');
+    document.documentElement.style.setProperty('--nl3my',e.clientY+'px');
+    document.documentElement.classList.remove('nl3-idle');
+    clearTimeout(idleT);idleT=setTimeout(function(){document.documentElement.classList.add('nl3-idle');},2600);
+  },{passive:true});
+}else{grid.style.display='none';spot.style.display='none';}
+
+/* ---------- 5) Indicateur de navigation fluide ---------- */
+var nav=document.querySelector('.nav');
+if(nav){
+  var ind=document.createElement('div');ind.id='nl3-nav-ind';nav.appendChild(ind);
+  var place=function(){
+    var a=nav.querySelector('.nav-btn.active');
+    if(!a){ind.classList.remove('nl3-on');return;}
+    ind.style.left=a.offsetLeft+'px';ind.style.width=a.offsetWidth+'px';ind.classList.add('nl3-on');
+  };
+  requestAnimationFrame(place);addEventListener('resize',place);
+  try{new MutationObserver(function(){requestAnimationFrame(place);})
+      .observe(nav,{attributes:true,subtree:true,attributeFilter:['class']});}catch(e){}
+  nav.addEventListener('scroll',place,{passive:true});
+}
+
+/* ---------- 6) Tilt 3D léger (cartes clés) ---------- */
+if(FINE&&!RM){
+  var tiltEls=document.querySelectorAll('.metric,.plan-card,.result-box');
+  Array.prototype.forEach.call(tiltEls,function(el){
+    var rect=null;
+    el.addEventListener('pointerenter',function(){rect=el.getBoundingClientRect();el.style.transition='transform .12s ease-out';});
+    el.addEventListener('pointermove',function(e){
+      if(!rect)rect=el.getBoundingClientRect();
+      var rx=((e.clientY-rect.top)/rect.height-0.5)*-5;
+      var ry=((e.clientX-rect.left)/rect.width-0.5)*5;
+      el.style.transform='perspective(700px) rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg) translateY(-2px)';
+    });
+    el.addEventListener('pointerleave',function(){
+      el.style.transition='transform .45s cubic-bezier(.22,1,.36,1)';el.style.transform='';rect=null;
+    });
+  });
+}
+
+/* ---------- 7) Boutons magnétiques ---------- */
+if(FINE&&!RM){
+  var mags=document.querySelectorAll('.btn-primary,.lock-btn');
+  Array.prototype.forEach.call(mags,function(el){
+    el.addEventListener('pointermove',function(e){
+      var r=el.getBoundingClientRect();
+      var dx=(e.clientX-r.left-r.width/2)/r.width,dy=(e.clientY-r.top-r.height/2)/r.height;
+      el.style.transform='translate('+(dx*5).toFixed(1)+'px,'+(dy*4).toFixed(1)+'px)';
+    });
+    el.addEventListener('pointerleave',function(){el.style.transform='';});
+  });
+}
+
+/* ---------- 8) Ripple tactile ---------- */
+if(!RM){
+  document.addEventListener('pointerdown',function(e){
+    var b=e.target.closest&&e.target.closest('.btn-primary,.btn-outline,.lock-btn,.auth-tab');
+    if(!b)return;
+    var r=b.getBoundingClientRect(),s=Math.max(r.width,r.height);
+    var sp=document.createElement('span');sp.className='nl3-ripple';
+    sp.style.width=sp.style.height=s+'px';
+    sp.style.left=(e.clientX-r.left-s/2)+'px';sp.style.top=(e.clientY-r.top-s/2)+'px';
+    b.appendChild(sp);sp.addEventListener('animationend',function(){sp.remove();});
+  },{passive:true});
+}
+
+/* ---------- 9) Pulse du profit à chaque calcul ---------- */
+try{
+  Array.prototype.forEach.call(document.querySelectorAll('.profit-num'),function(el){
+    new MutationObserver(function(){
+      el.classList.remove('nl3-pulse');void el.offsetWidth;el.classList.add('nl3-pulse');
+    }).observe(el,{childList:true,characterData:true,subtree:true});
+  });
+}catch(e){}
+
+/* ---------- 10) Topbar au scroll ---------- */
+var tb=document.querySelector('.topbar');
+if(tb){addEventListener('scroll',function(){tb.classList.toggle('nl3-sc',scrollY>6);},{passive:true});}
+
+}catch(err){/* le skin ne doit jamais casser l'app */}});
+}catch(err){}
+})();
+
 </script>
 </body>
 </html>
