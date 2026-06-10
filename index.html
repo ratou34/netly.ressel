@@ -574,6 +574,26 @@ input:focus,select:focus{border-color:var(--purple2)!important;box-shadow:0 0 0 
   #nl3-spot,#nl3-grid{display:none}
 }
 
+/* --- MODE CLAIR (thème Blanc) : adaptations du skin --- */
+html.nl3-light .topbar{background:rgba(255,255,255,.62)!important}
+html.nl3-light .topbar.nl3-sc{background:rgba(255,255,255,.85)!important;box-shadow:0 18px 40px -28px rgba(70,50,140,.28)}
+html.nl3-light .card,html.nl3-light .metric,html.nl3-light .auth-box,html.nl3-light .lock-box,html.nl3-light .result-box,html.nl3-light .plan-card{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,0) 36%),
+    linear-gradient(var(--card),var(--card)) padding-box,
+    linear-gradient(165deg,rgba(124,58,237,.40),rgba(124,58,237,.08) 28%,rgba(27,20,51,.08) 55%,rgba(168,85,247,.25) 100%) border-box!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 18px 40px -26px rgba(70,50,140,.22)}
+html.nl3-light .card:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 26px 56px -28px rgba(70,50,140,.3),0 0 0 1px rgba(124,58,237,.15)}
+html.nl3-light .lock-cover{background:rgba(244,242,250,.88)}
+html.nl3-light select option{background:#fff;color:#1b1433}
+html.nl3-light #nl3-grain{opacity:.03;mix-blend-mode:multiply}
+html.nl3-light #nl3-spot{mix-blend-mode:multiply;opacity:.35;
+  background:radial-gradient(540px 540px at var(--nl3mx,-500px) var(--nl3my,-500px),rgba(124,58,237,.12),rgba(124,58,237,.04) 45%,transparent 70%)}
+html.nl3-light #nl3-grid{opacity:.4}
+html.nl3-light .profit-num{text-shadow:0 0 24px rgba(124,58,237,.22)}
+html.nl3-light .btn-logout:hover{background:#fdecea}
+html.nl3-light .nl3-ripple{background:rgba(124,58,237,.25);mix-blend-mode:multiply}
+
 </style>
 </head>
 <body>
@@ -946,6 +966,7 @@ input:focus,select:focus{border-color:var(--purple2)!important;box-shadow:0 0 0 
             <div class="color-opt bg-opt" style="background:linear-gradient(135deg,#120a06,#33200f);border:1px solid rgba(255,255,255,.18)" data-theme="espresso" onclick="setBgTheme('espresso',this)" title="Espresso"></div>
             <div class="color-opt bg-opt" style="background:linear-gradient(135deg,#0e0616,#2a1245);border:1px solid rgba(255,255,255,.18)" data-theme="prune" onclick="setBgTheme('prune',this)" title="Prune"></div>
             <div class="color-opt bg-opt" style="background:linear-gradient(135deg,#000,#0a0a0e);border:1px solid rgba(255,255,255,.18)" data-theme="amoled" onclick="setBgTheme('amoled',this)" title="Noir pur"></div>
+            <div class="color-opt bg-opt" style="background:linear-gradient(135deg,#fff,#e9e5f4);border:1px solid rgba(0,0,0,.15)" data-theme="blanc" onclick="setBgTheme('blanc',this)" title="Blanc"></div>
           </div>
 
           <div class="param-row" style="margin-top:4px">
@@ -1049,14 +1070,15 @@ input:focus,select:focus{border-color:var(--purple2)!important;box-shadow:0 0 0 
 const SUPABASE_URL='https://hfkzmfkiptkolptuwrbd.supabase.co';
 const SUPABASE_KEY='sb_publishable_BdtEAqiZaFZ3XFASCJoTNg_XJTMswnD';
 let sb,flips=[],currentUser=null,currentPhoto=null,authMode='login',userPlan='free',calCurrentDate=new Date();
-/* Thèmes de fond : [bg, bg2, bg3, card] — tons sombres calibrés pour la lisibilité */
+/* Thèmes de fond : [bg, bg2, bg3, card, clair(0/1)] */
 const NL_BG_THEMES={
-  obsidienne:['#07070f','#0b0b16','#0e0e1c','#0d0d1a'],
-  minuit:    ['#04081a','#070d24','#0a112e','#081026'],
-  foret:     ['#041008','#06160c','#081c10','#07180e'],
-  espresso:  ['#120a06','#180e09','#1e120b','#1a100a'],
-  prune:     ['#0e0616','#130920','#180c2a','#150a24'],
-  amoled:    ['#000000','#050507','#09090c','#060609']
+  obsidienne:['#07070f','#0b0b16','#0e0e1c','#0d0d1a',0],
+  minuit:    ['#04081a','#070d24','#0a112e','#081026',0],
+  foret:     ['#041008','#06160c','#081c10','#07180e',0],
+  espresso:  ['#120a06','#180e09','#1e120b','#1a100a',0],
+  prune:     ['#0e0616','#130920','#180c2a','#150a24',0],
+  amoled:    ['#000000','#050507','#09090c','#060609',0],
+  blanc:     ['#f4f2fa','#ffffff','#edeaf6','#ffffff',1]
 };
 let settings={conseil:true,'confirm-delete':true,arrondi:false,'alerte-jours':14,'default-plat':'vinted','default-cat':'streetwear','marge-cible':30,'app-name':'Netly',accent:'#7c3aed',accent2:'#a855f7',bgTheme:'obsidienne',username:''};
 
@@ -1103,6 +1125,16 @@ function applySettings(){
   document.documentElement.style.setProperty('--bg2',bgT[1]);
   document.documentElement.style.setProperty('--bg3',bgT[2]);
   document.documentElement.style.setProperty('--card',bgT[3]);
+  const isLight=!!bgT[4];
+  document.documentElement.classList.toggle('nl3-light',isLight);
+  document.documentElement.style.setProperty('--text',isLight?'#1b1433':'#ede8ff');
+  document.documentElement.style.setProperty('--text2',isLight?'#6b6390':'#7060a0');
+  document.documentElement.style.setProperty('--text3',isLight?'#b6b0cf':'#2e1e55');
+  document.documentElement.style.setProperty('--border',isLight?'#e6e2f2':'#1a1530');
+  document.documentElement.style.setProperty('--red-bg',isLight?'#fdecea':'#1a0707');
+  document.documentElement.style.setProperty('--green-dim',isLight?'#e7f6ef':'#071a12');
+  document.documentElement.style.setProperty('--yellow-dim',isLight?'#fdf3e1':'#1a1207');
+  document.documentElement.style.setProperty('--purple-dim',hexToRgba(settings.accent,isLight?0.08:0.12));
   // App name
   const name=settings['app-name']||'Netly';
   document.title=name+' — Profit Tracker Resell';
@@ -1687,7 +1719,12 @@ try{
 /* ---------- 3) Aurora générative (canvas) ---------- */
 var actx=aur.getContext('2d'),off=document.createElement('canvas'),octx=off.getContext('2d');
 var W=0,H=0,SC=0.13,t=Math.random()*1000,last=0,running=true;
-var pal={bg:'#07070f',c:['#7c3aed','#a855f7','#c084fc','#1e0f45']};
+var pal={bg:'#07070f',c:['#7c3aed','#a855f7','#c084fc','#1e0f45'],light:false};
+function hexLuma(h){
+  h=(h||'').replace('#','');if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  if(h.length<6)return 0;
+  return (parseInt(h.substr(0,2),16)*0.299+parseInt(h.substr(2,2),16)*0.587+parseInt(h.substr(4,2),16)*0.114)/255;
+}
 function readPal(){
   try{
     var cs=getComputedStyle(document.documentElement);
@@ -1696,7 +1733,7 @@ function readPal(){
     var p3=cs.getPropertyValue('--purple3').trim()||pal.c[2];
     var pg=cs.getPropertyValue('--purple-glow').trim()||pal.c[3];
     var bg=cs.getPropertyValue('--bg').trim()||pal.bg;
-    pal={bg:bg,c:[p1,p2,p3,pg]};
+    pal={bg:bg,c:[p1,p2,p3,pg],light:hexLuma(bg)>0.55};
   }catch(e){}
 }
 readPal();setInterval(readPal,3500);
@@ -1729,7 +1766,7 @@ function frame(now){
     var g=octx.createRadialGradient(x,y,0,x,y,r);
     var col=pal.c[B.ci];
     g.addColorStop(0,col);g.addColorStop(1,'rgba(0,0,0,0)');
-    octx.globalAlpha=B.a*0.5;
+    octx.globalAlpha=B.a*(pal.light?0.22:0.5);
     octx.fillStyle=g;octx.beginPath();octx.arc(x,y,r,0,6.2832);octx.fill();
   }
   octx.globalAlpha=1;
@@ -1739,7 +1776,7 @@ function frame(now){
   actx.drawImage(off,0,0,W,H); // upscale massif = flou organique
   /* vignette pour la profondeur */
   var v=actx.createRadialGradient(W/2,H*0.42,Math.min(W,H)*0.25,W/2,H/2,Math.max(W,H)*0.75);
-  v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,0.5)');
+  v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,'+(pal.light?0.07:0.5)+')');
   actx.fillStyle=v;actx.fillRect(0,0,W,H);
 }
 if(RM){frame(40);running=false;} else {requestAnimationFrame(frame);}
