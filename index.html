@@ -833,7 +833,41 @@ html.nl3-light .nl3-ripple{background:rgba(124,58,237,.25);mix-blend-mode:multip
       <div class="glow-bar"></div>
       <div class="lock-wrap">
         <div class="card">
-          <div class="card-header"><div class="card-title">Gestion de stock</div></div>
+          <div class="card-header"><div class="card-title">Gestion de stock</div><button class="lock-btn" style="padding:5px 14px;font-size:11px" onclick="toggleStockAdd()" id="stock-add-toggle">+ Ajouter</button></div>
+          <div id="stock-add-form" style="display:none;border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:14px;background:var(--bg2)">
+            <div class="field-group">
+              <div class="field-label">Article</div>
+              <input type="text" id="stock-add-nom" placeholder="Ex : Hoodie Nike vintage">
+            </div>
+            <div class="row2">
+              <div class="field-group">
+                <div class="field-label">Prix d'achat (€)</div>
+                <input type="number" id="stock-add-achat" placeholder="15" min="0" step="0.01">
+              </div>
+              <div class="field-group">
+                <div class="field-label">Plateforme visée</div>
+                <select id="stock-add-plat">
+                  <option value="vinted">Vinted</option>
+                  <option value="leboncoin">Leboncoin</option>
+                  <option value="vestiaire">Vestiaire Collective</option>
+                  <option value="instagram">Instagram / IRL</option>
+                  <option value="stockx">StockX / GOAT</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-group">
+              <div class="field-label">Catégorie</div>
+              <select id="stock-add-cat">
+                <option value="streetwear">Streetwear</option>
+                <option value="sneakers">Sneakers</option>
+                <option value="luxe">Luxe / Marques</option>
+                <option value="vintage">Vintage</option>
+                <option value="sport">Sport</option>
+                <option value="autre">Autre</option>
+              </select>
+            </div>
+            <button class="btn-primary" style="margin-top:6px" id="stock-add-btn" onclick="addStockItem()">Ajouter au stock</button>
+          </div>
           <div class="metrics" style="margin-bottom:14px">
             <div class="metric"><div class="metric-val" id="stock-count">0</div><div class="metric-label">Articles</div></div>
             <div class="metric"><div class="metric-val" id="stock-investi">0€</div><div class="metric-label">Investi</div></div>
@@ -1505,6 +1539,36 @@ function renderCal(){
 function changeCalMonth(dir){calCurrentDate=new Date(calCurrentDate.getFullYear(),calCurrentDate.getMonth()+dir,1);renderCal();}
 
 // STOCK
+function toggleStockAdd(){
+  const f=document.getElementById('stock-add-form');
+  const open=f.style.display==='none';
+  f.style.display=open?'block':'none';
+  document.getElementById('stock-add-toggle').textContent=open?'− Fermer':'+ Ajouter';
+  if(open)document.getElementById('stock-add-nom').focus();
+}
+
+async function addStockItem(){
+  const nom=document.getElementById('stock-add-nom').value.trim();
+  const achat=parseFloat(document.getElementById('stock-add-achat').value)||0;
+  const plat=document.getElementById('stock-add-plat').value;
+  const cat=document.getElementById('stock-add-cat').value;
+  if(!nom){toast('Donne un nom à l\'article');return;}
+  if(achat<=0){toast('Indique le prix d\'achat');return;}
+  const now=new Date();const mk=now.getFullYear()+'-'+(now.getMonth()+1);
+  const thisMonth=flips.filter(f=>f.monthKey===mk).length;
+  const limit=LIMITS[userPlan].flips;
+  if(thisMonth>=limit){toast(`Limite de ${limit} flips/mois atteinte — Upgrade !`);return;}
+  const btn=document.getElementById('stock-add-btn');btn.disabled=true;btn.textContent='Ajout...';
+  const{data,error}=await sb.from('flips').insert([{user_id:currentUser.id,nom,achat,vente:0,envoi:0,autres:0,commission:0,profit:0,plat,cat,photo:null,date:now.toLocaleDateString('fr-FR'),month_key:mk,statut:'cours'}]).select().single();
+  btn.disabled=false;btn.textContent='Ajouter au stock';
+  if(error){toast('Erreur : '+error.message);return;}
+  flips.unshift({id:data.id,nom,achat,vente:0,envoi:0,autres:0,commission:0,profit:0,plat,cat,photo:null,date:now.toLocaleDateString('fr-FR'),monthKey:mk,statut:'cours'});
+  document.getElementById('stock-add-nom').value='';
+  document.getElementById('stock-add-achat').value='';
+  renderStock();toast('Article ajouté au stock !');
+  document.getElementById('stock-add-nom').focus();
+}
+
 function renderStock(){
   const enCours=flips.filter(f=>f.statut==='cours');
   const totalInvesti=enCours.reduce((s,f)=>s+f.achat,0);
@@ -1513,7 +1577,7 @@ function renderStock(){
   document.getElementById('stock-investi').textContent=totalInvesti.toFixed(0)+'€';
   document.getElementById('stock-valeur').textContent=valeurEst.toFixed(0)+'€';
   const list=document.getElementById('stock-list');
-  if(enCours.length===0){list.innerHTML='<div class="empty">Aucun article en stock.<br>Enregistre des flips "En cours".</div>';return;}
+  if(enCours.length===0){list.innerHTML='<div class="empty">Aucun article en stock.<br>Clique sur « + Ajouter » ci-dessus, ou enregistre un flip "En cours".</div>';return;}
   list.innerHTML=enCours.map(f=>`<div class="stock-row"><div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">${f.photo?`<div class="flip-thumb" style="width:36px;height:36px"><img src="${f.photo}" alt=""></div>`:`<div class="flip-thumb" style="width:36px;height:36px">${catEmoji[f.cat]||'📦'}</div>`}<div style="min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${f.nom}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${platLabels[f.plat]} · ${f.date}</div></div></div><div style="text-align:right;flex-shrink:0"><div style="font-size:14px;font-weight:800;color:var(--purple2)">${f.achat.toFixed(2)}€</div><div style="font-size:10px;color:var(--text2);margin-top:2px">Investi</div></div></div>`).join('');
 }
 
